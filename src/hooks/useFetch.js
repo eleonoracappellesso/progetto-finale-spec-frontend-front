@@ -8,7 +8,8 @@ export function useFetch(path) {
     const fetchData = useCallback(async () => {
         try {
             setLoading(true);
-            const res = await fetch(`http://localhost:3001${path}`);
+            const baseURL = 'http://localhost:3001';
+            const res = await fetch(baseURL + path);
             if (!res.ok) throw new Error('Errore nella richiesta al server');
             const json = await res.json();
             setData(json);

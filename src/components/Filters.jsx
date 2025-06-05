@@ -10,7 +10,7 @@ const Filters = ({ search, setSearch, category, setCategory, sortBy, setSortBy }
     }, []);
 
     return (
-        <div style={{ marginBottom: '20px' }}>
+        <div className='filter-div'>
             {/* Input per cercare nel titolo */}
             <input
                 ref={inputRef}

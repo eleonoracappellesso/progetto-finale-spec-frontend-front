@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+
+body {
+    font-family: 'Quicksand', sans-serif;
+    color: beige;
+    background-color: rgb(46, 18, 18);
+}
+
+main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.item-div {
+    border: 1px solid beige;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 4px rgb(103, 70, 70);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.item-div:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.item-div strong {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.filter-div {
+    margin-bottom: 20px;
+}
+
+input,
+select {
+    padding: 8px;
+    margin: 10px 5px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.backToList-btn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

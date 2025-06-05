@@ -1,11 +1,14 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 // Componente per mostrare singolo caffè (titolo e categoria)
 const CoffeeItem = ({ coffee }) => {
     return (
-        <div style={{ border: '1px solid gray', padding: '8px', marginBottom: '4px' }}>
-            <strong>{coffee.title}</strong> - {coffee.category}
-        </div>
+        <Link to={`/coffees/${coffee.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+            <div className='item-div'>
+                <strong>{coffee.title}</strong> {coffee.category}
+            </div>
+        </Link>
     );
 };
 

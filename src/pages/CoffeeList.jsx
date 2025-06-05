@@ -61,7 +61,7 @@ export default function CoffeeList() {
 
     return (
         <div>
-            <h1>☕ Lista dei Caffè</h1>
+            <h1>☕ Coffee List</h1>
 
             {/* Sezione filtri */}
             <Filters
