@@ -1,30 +1,26 @@
 import { NavLink } from "react-router-dom";
+
 export default function Header() {
     return (
         <header>
             <nav>
                 <NavLink
                     to="/"
-                    style={({ isActive }) => ({
-                        textDecoration: isActive ? 'underline' : 'none',
-                        fontWeight: isActive ? 'bold' : 'normal',
-                        color: "beige"
-
-                    })}
+                    className={({ isActive }) =>
+                        isActive ? "nav-link active" : "nav-link"
+                    }
                 >
                     All Coffees
                 </NavLink>
                 <NavLink
                     to="/favorites"
-                    style={({ isActive }) => ({
-                        textDecoration: isActive ? 'underline' : 'none',
-                        fontWeight: isActive ? 'bold' : 'normal',
-                        color: "beige"
-                    })}
+                    className={({ isActive }) =>
+                        isActive ? "nav-link active" : "nav-link"
+                    }
                 >
                     Favorites
                 </NavLink>
             </nav>
-        </header >
-    )
+        </header>
+    );
 }
