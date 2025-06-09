@@ -63,15 +63,30 @@ export default function CoffeeList() {
         <div>
             <h1>☕ Coffee List</h1>
 
-            {/* Sezione filtri */}
-            <Filters
-                search={search}
-                setSearch={setSearch}
-                category={category}
-                setCategory={setCategory}
-                sortBy={sortBy}
-                setSortBy={setSortBy}
-            />
+            <div className="filter-div">
+                {/* Sezione filtri */}
+                <Filters
+                    search={search}
+                    setSearch={setSearch}
+                    category={category}
+                    setCategory={setCategory}
+                    sortBy={sortBy}
+                    setSortBy={setSortBy}
+                />
+
+                {search || category || sortBy ? (
+                    <button
+                        className="reset-btn"
+                        onClick={() => {
+                            setSearch('');
+                            setCategory('');
+                            setSortBy('');
+                        }}
+                    >
+                        Reset filtri
+                    </button>
+                ) : null}
+            </div>
 
             {/* Lista dei caffè filtrati */}
             {filteredCoffees.length === 0 ? (

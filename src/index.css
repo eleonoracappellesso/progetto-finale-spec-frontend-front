@@ -18,6 +18,9 @@ header {
     background-color: rgb(46, 18, 18);
     padding: 1rem 2rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 nav {
@@ -111,6 +114,17 @@ select {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.reset-btn {
+    padding: 10px 20px;
+    background-color: #f5deb3;
+    color: rgb(46, 18, 18);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+    margin-bottom: 15px;
 }
 
 /*stile per pagina di comparazione*/
