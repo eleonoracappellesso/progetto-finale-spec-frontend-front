@@ -31,6 +31,14 @@ export default function CoffeeDetails() {
             <br />
             <button
                 className='backToList-btn'
+                onClick={() => navigate(`/compare?base=${coffee.id}`)}
+            >
+                Compare
+            </button>
+
+            <br />
+            <button
+                className='backToList-btn'
                 onClick={() => navigate('/')}
             >
                 ← Back to list

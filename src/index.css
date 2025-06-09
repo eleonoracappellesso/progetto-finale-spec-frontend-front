@@ -54,3 +54,68 @@ select {
     border-radius: 5px;
     cursor: pointer;
 }
+
+/*stile per pagina di comparazione*/
+.compare-container {
+    padding: 2rem;
+}
+
+.compare-title {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.comparison-table {
+    display: flex;
+    flex-wrap: wrap;
+    /* Per mobile responsive */
+    gap: 2rem;
+    justify-content: center;
+}
+
+.compare-card {
+    flex: 1 1 300px;
+    /* minimo 300px, cresce se c'è spazio */
+    border: 1px solid #ccc;
+    padding: 1rem;
+    border-radius: 8px;
+    background: #f9f9f9;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.compare-card h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+.compare-card button {
+    margin-bottom: 1rem;
+    background: #ff4d4f;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.compare-card button:hover {
+    background: #d9363e;
+}
+
+.compare-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.compare-list li {
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.compare-list li strong {
+    display: inline-block;
+    width: 120px;
+    color: #555;
+}
