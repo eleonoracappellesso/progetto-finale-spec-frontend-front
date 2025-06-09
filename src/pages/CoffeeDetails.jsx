@@ -29,20 +29,22 @@ export default function CoffeeDetails() {
             <p><strong>Rating:</strong> {coffee.rating}/10 ⭐ </p>
 
             <br />
-            <button
-                className='backToList-btn'
-                onClick={() => navigate(`/compare?base=${coffee.id}`)}
-            >
-                Compare
-            </button>
+            <div className='btn-container'>
+                <button
+                    className='compare-btn'
+                    onClick={() => navigate(`/compare?base=${coffee.id}`)}
+                >
+                    Compare
+                </button>
 
-            <br />
-            <button
-                className='backToList-btn'
-                onClick={() => navigate('/')}
-            >
-                ← Back to list
-            </button>
+                <br />
+                <button
+                    className='backToList-btn'
+                    onClick={() => navigate('/')}
+                >
+                    ← Back to list
+                </button>
+            </div>
         </div>
     );
 }

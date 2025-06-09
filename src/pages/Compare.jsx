@@ -1,9 +1,11 @@
 import { useCoffee } from "../contexts/CoffeeContext";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 // Pagina di comparazione tra un caffè base (passato da URL) e uno selezionabile
 export default function Compare() {
+    const navigate = useNavigate();
+
     const { coffees } = useCoffee();
     const [searchParams] = useSearchParams();
     const baseId = searchParams.get("base"); // ID del caffè base dalla query string
@@ -15,7 +17,7 @@ export default function Compare() {
 
     // Se il caffè base non esiste, messaggio di errore
     if (!baseCoffee) {
-        return <p>Caffè base non trovato. Torna alla <a href="/">lista</a>.</p>;
+        return <p>Coffee do not found. Go back to <a href="/">list</a>.</p>;
     }
 
     const fields = [
@@ -31,24 +33,24 @@ export default function Compare() {
     ];
 
     return (
-        <div>
-            <h1>📊 Confronta Caffè</h1>
+        <div className="compare-container">
+            <h1>📊 Coffee Comparison</h1>
 
-            <div style={{ display: "flex", gap: "2rem" }}>
+            <div className="comparison-table">
                 {/* Card del caffè base */}
-                <CoffeeCard coffee={baseCoffee} fields={fields} title="Caffè Base" />
+                <CoffeeCard coffee={baseCoffee} fields={fields} title="Base Coffee" />
 
                 {/* Card del caffè selezionato */}
                 {selectedCoffee ? (
-                    <CoffeeCard coffee={selectedCoffee} fields={fields} title="Caffè Selezionato" />
+                    <CoffeeCard coffee={selectedCoffee} fields={fields} title="Selected Coffee" />
                 ) : (
                     <div style={{ flex: 1 }}>
-                        <h3>Scegli un caffè da confrontare</h3>
+                        <h3>Select a coffee to compare</h3>
                         <select
                             value={selectedId}
                             onChange={e => setSelectedId(e.target.value)}
                         >
-                            <option value="">-- Seleziona caffè --</option>
+                            <option value="">-- Select coffee --</option>
                             {coffees
                                 .filter(c => c.id !== baseCoffee.id)
                                 .map(c => (
@@ -60,6 +62,13 @@ export default function Compare() {
                     </div>
                 )}
             </div>
+            <br />
+            <button
+                className='backToList-btn'
+                onClick={() => navigate('/')}
+            >
+                ← Back to list
+            </button>
         </div>
     );
 }
@@ -67,9 +76,9 @@ export default function Compare() {
 // Componente per visualizzare i dettagli di un caffè
 function CoffeeCard({ coffee, fields, title }) {
     return (
-        <div style={{ flex: 1, border: '1px solid #ccc', borderRadius: '8px', padding: '1rem' }}>
+        <div className="compare-card">
             <h3>{title}</h3>
-            <ul style={{ listStyle: 'none', padding: 0 }}>
+            <ul className="compare-list">
                 {fields.map(f => (
                     <li key={f.key}>
                         <strong>{f.label}:</strong> {f.prefix || ''}{coffee[f.key]}{f.suffix || ''}
