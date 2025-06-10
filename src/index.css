@@ -170,7 +170,16 @@ select {
     color: beige;
 }
 
-/*stile pagina preferiti*/
+/*stile bottone preferiti*/
+.heart-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+
+/*stile alert preferiti*/
 .alert-div {
     position: fixed !important;
     top: 10px !important;
