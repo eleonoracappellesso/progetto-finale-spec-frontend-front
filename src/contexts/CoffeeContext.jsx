@@ -7,6 +7,7 @@ const CoffeeContext = createContext();
 export const CoffeeProvider = ({ children }) => {
     const [coffees, setCoffees] = useState([]); // Stato globale per i caffè
     const [compareList, setCompareList] = useState([]); // mex 2 caffè per confronto
+    const [favorites, setFavorites] = useState([]); //Stato globale per i caffè preferiti
 
     // //Funzione che aggiunge un caffè alla lista di confronto
     // const addToCompare = (coffee) => {
@@ -27,6 +28,8 @@ export const CoffeeProvider = ({ children }) => {
             coffees,
             setCoffees,
             compareList,
+            favorites,
+            setFavorites
             // addToCompare,
             // removeFromCompare
         }}>

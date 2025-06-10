@@ -40,28 +40,29 @@ export default function Compare() {
                 {/* Card del caffè base */}
                 <CoffeeCard coffee={baseCoffee} fields={fields} title="Base Coffee" />
 
-                {/* Card del caffè selezionato */}
-                {selectedCoffee ? (
-                    <CoffeeCard coffee={selectedCoffee} fields={fields} title="Selected Coffee" />
-                ) : (
-                    <div style={{ flex: 1 }}>
-                        <h3>Select a coffee to compare</h3>
-                        <select
-                            value={selectedId}
-                            onChange={e => setSelectedId(e.target.value)}
-                        >
-                            <option value="">-- Select coffee --</option>
-                            {coffees
-                                .filter(c => c.id !== baseCoffee.id)
-                                .map(c => (
-                                    <option key={c.id} value={c.id}>
-                                        {c.title}
-                                    </option>
-                                ))}
-                        </select>
-                    </div>
-                )}
+                <div style={{ flex: 1 }}>
+                    <h3>Select a coffee to compare</h3>
+                    <select
+                        value={selectedId}
+                        onChange={e => setSelectedId(e.target.value)}
+                    >
+                        <option value="">-- Select coffee --</option>
+                        {coffees
+                            .filter(c => c.id !== baseCoffee.id)
+                            .map(c => (
+                                <option key={c.id} value={c.id}>
+                                    {c.title}
+                                </option>
+                            ))}
+                    </select>
+
+                    {/* Mostra la card solo se il caffè è stato selezionato */}
+                    {selectedCoffee && (
+                        <CoffeeCard coffee={selectedCoffee} fields={fields} title="Selected Coffee" />
+                    )}
+                </div>
             </div>
+
             <br />
             <button
                 className='backToList-btn'

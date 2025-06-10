@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import FavoriteButton from './FavoriteButton'
 
 // Componente per mostrare singolo caffè (titolo e categoria)
 const CoffeeItem = ({ coffee }) => {
@@ -10,6 +11,7 @@ const CoffeeItem = ({ coffee }) => {
         >
             <div className='item-div'>
                 <strong>{coffee.title}</strong> {coffee.category}
+                <FavoriteButton coffee={coffee} />
             </div>
         </Link>
     );
