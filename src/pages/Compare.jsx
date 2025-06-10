@@ -1,24 +1,24 @@
-import { useCoffee } from "../contexts/CoffeeContext";
-import { useSearchParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
+// src/pages/Compare.jsx
+import React, { useState } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useCoffee } from '../contexts/CoffeeContext';
+import { useFetch } from '../hooks/useFetch';
+import CoffeeCard from '../components/CoffeeCard';
 
-// Pagina di comparazione tra un caffè base (passato da URL) e uno selezionabile
 export default function Compare() {
     const navigate = useNavigate();
-
     const { coffees } = useCoffee();
     const [searchParams] = useSearchParams();
-    const baseId = searchParams.get("base"); // ID del caffè base dalla query string
-    const [selectedId, setSelectedId] = useState(""); // ID del secondo caffè scelto
+    const baseId = searchParams.get("base");
+    const [selectedId, setSelectedId] = useState("");
 
-    // Trova il caffè base e il caffè selezionato
-    const baseCoffee = coffees.find(c => String(c.id) === String(baseId));
-    const selectedCoffee = coffees.find(c => String(c.id) === selectedId);
+    const { data: baseData, loading: baseLoading, error: baseError } = useFetch(
+        baseId ? `/coffees/${baseId}` : null
+    );
 
-    // Se il caffè base non esiste, messaggio di errore
-    if (!baseCoffee) {
-        return <p>Coffee do not found. Go back to <a href="/">list</a>.</p>;
-    }
+    const { data: selectedData, loading: selectedLoading, error: selectedError } = useFetch(
+        selectedId ? `/coffees/${selectedId}` : null
+    );
 
     const fields = [
         { label: "Name", key: "title" },
@@ -33,59 +33,128 @@ export default function Compare() {
     ];
 
     return (
-        <div className="compare-container">
+        <div className="compare-page">
             <h1>📊 Coffee Comparison</h1>
 
+            {/* Intestazione fuori dalle colonne */}
+            <div className="compare-header">
+                <div>
+                    <h2>Base Coffee</h2>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
+                    <h2>Selected Coffee</h2>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                        <p style={{ fontSize: '0.8rem', margin: 0 }}>Select a coffee to compare:</p>
+                        <select
+                            className="coffee-select"
+                            value={selectedId}
+                            onChange={e => setSelectedId(e.target.value)}
+                        >
+                            <option value="">-- Select coffee --</option>
+                            {coffees
+                                .filter(c => String(c.id) !== String(baseId))
+                                .map(c => (
+                                    <option key={c.id} value={c.id}>
+                                        {c.title}
+                                    </option>
+                                ))}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             <div className="comparison-table">
-                {/* Card del caffè base */}
-                <CoffeeCard coffee={baseCoffee} fields={fields} title="Base Coffee" />
+                <div className="coffee-column">
+                    {baseLoading ? (
+                        <p>Loading base coffee...</p>
+                    ) : baseError ? (
+                        <p>Error loading base coffee.</p>
+                    ) : baseData?.coffee ? (
+                        <CoffeeCard coffee={baseData.coffee} fields={fields} />
+                    ) : (
+                        <p>Base coffee not found.</p>
+                    )}
+                </div>
 
-                <div style={{ flex: 1 }}>
-                    <h3>Select a coffee to compare</h3>
-                    <select
-                        value={selectedId}
-                        onChange={e => setSelectedId(e.target.value)}
-                    >
-                        <option value="">-- Select coffee --</option>
-                        {coffees
-                            .filter(c => c.id !== baseCoffee.id)
-                            .map(c => (
-                                <option key={c.id} value={c.id}>
-                                    {c.title}
-                                </option>
-                            ))}
-                    </select>
+                <div className="coffee-column">
+                    {selectedLoading && <p>Loading selected coffee...</p>}
 
-                    {/* Mostra la card solo se il caffè è stato selezionato */}
-                    {selectedCoffee && (
-                        <CoffeeCard coffee={selectedCoffee} fields={fields} title="Selected Coffee" />
+                    {!selectedLoading && selectedId && !selectedData?.coffee && (
+                        <p className="error-text">Error loading selected coffee.</p>
+                    )}
+
+                    {selectedData?.coffee && (
+                        <CoffeeCard coffee={selectedData.coffee} fields={fields} />
                     )}
                 </div>
             </div>
 
-            <br />
-            <button
-                className='backToList-btn'
-                onClick={() => navigate('/')}
-            >
+            <button className="back-btn" onClick={() => navigate('/')}>
                 ← Back to list
             </button>
-        </div>
+        </div >
     );
 }
 
-// Componente per visualizzare i dettagli di un caffè
-function CoffeeCard({ coffee, fields, title }) {
-    return (
-        <div className="compare-card">
-            <h3>{title}</h3>
-            <ul className="compare-list">
-                {fields.map(f => (
-                    <li key={f.key}>
-                        <strong>{f.label}:</strong> {f.prefix || ''}{coffee[f.key]}{f.suffix || ''}
-                    </li>
-                ))}
-            </ul>
-        </div>
-    );
-}
+
+
+
+
+
+
+
+
+// <div className="compare-page">
+//     <h1>📊 Coffee Comparison</h1>
+
+//     <div className="comparison-table">
+//         <div className="coffee-column">
+//             {baseLoading ? (
+//                 <p>Loading base coffee...</p>
+//             ) : baseError ? (
+//                 <p>Error loading base coffee.</p>
+//             ) : baseData?.coffee ? (
+//                 <>
+//                     <h2>Base Coffee</h2>
+//                     <CoffeeCard coffee={baseData.coffee} fields={fields} />
+//                 </>
+//             ) : (
+//                 <p>Base coffee not found.</p>
+//             )}
+//         </div>
+
+//         <div className="coffee-column">
+//             <h2>Selected Coffee</h2>
+//             <select
+//                 className="coffee-select"
+//                 value={selectedId}
+//                 onChange={e => setSelectedId(e.target.value)}
+//             >
+//                 <option value="">-- Select coffee --</option>
+//                 {coffees
+//                     .filter(c => String(c.id) !== String(baseId))
+//                     .map(c => (
+//                         <option key={c.id} value={c.id}>
+//                             {c.title}
+//                         </option>
+//                     ))}
+//             </select>
+
+//             {selectedLoading && <p>Loading selected coffee...</p>}
+//             {/*Mostro l'errore solo se non ho dati validi*/}
+//             {!selectedLoading && selectedId && !selectedData?.coffee && (
+//                 <p className="error-text">Error loading selected coffee.</p>
+//             )}
+
+//             {/*mostro la card solo se è tutto ok*/}
+//             {selectedData?.coffee && (
+//                 <CoffeeCard coffee={selectedData.coffee} fields={fields} />
+//             )}
+//         </div>
+//     </div>
+
+//     <button className="back-btn" onClick={() => navigate('/')}>
+//         ← Back to list
+//     </button>
+// </div>
