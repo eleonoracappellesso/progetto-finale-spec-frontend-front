@@ -1,61 +1,49 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import FavoritesAlert from '../components/FavoritesAlert';
 import { useFetch } from '../hooks/useFetch';
 import { useCoffee } from '../contexts/CoffeeContext';
 import Filters from '../components/Filters';
 import CoffeeItem from '../components/CoffeeItem';
 
-// Pagina principale che mostra lista dei caffè con filtri e ordinamento
 export default function CoffeeList() {
-    // Otteniamo i dati dal backend tramite hook personalizzato
     const { data, loading, error } = useFetch('/coffees');
+    const { setCoffees, favorites, setFavorites } = useCoffee();
 
-    // Stato globale condiviso (es. in futuro per modifica/eliminazione)
-    const { setCoffees } = useCoffee();
-
-    // Stati locali per filtri e ordinamento
     const [search, setSearch] = useState('');
     const [category, setCategory] = useState('');
     const [sortBy, setSortBy] = useState('');
 
-    // Aggiorna contesto globale quando arrivano i dati
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+
     useEffect(() => {
         if (data) setCoffees(data);
     }, [data, setCoffees]);
 
-    // Applica ricerca, filtro e ordinamento in modo memorizzato (useMemo)
+    const handleFavorite = (coffee) => {
+        if (favorites.includes(coffee.id)) {
+            setFavorites(favorites.filter(id => id !== coffee.id));
+            setAlertMessage(`${coffee.title} correctly removed from favorites`);
+        } else {
+            setFavorites([...favorites, coffee.id]);
+            setAlertMessage(`${coffee.title} correctly added to favorites`);
+        }
+        setShowAlert(true);
+        setTimeout(() => setShowAlert(false), 5000);
+    };
+
     const filteredCoffees = useMemo(() => {
         if (!data) return [];
-
         let result = [...data];
-
-        // Filtro per titolo
-        if (search) {
-            result = result.filter(coffee =>
-                coffee.title.toLowerCase().includes(search.toLowerCase())
-            );
-        }
-
-        // Filtro per categoria
-        if (category) {
-            result = result.filter(coffee => coffee.category === category);
-        }
-
-        // Ordinamento
-        if (sortBy === 'title-asc') {
-            result.sort((a, b) => a.title.localeCompare(b.title));
-        } else if (sortBy === 'title-desc') {
-            result.sort((a, b) => b.title.localeCompare(a.title));
-        } else if (sortBy === 'category-asc') {
-            result.sort((a, b) => a.category.localeCompare(b.category));
-        } else if (sortBy === 'category-desc') {
-
-            result.sort((a, b) => b.category.localeCompare(a.category));
-        }
-
+        if (search) result = result.filter(c => c.title.toLowerCase().includes(search.toLowerCase()));
+        if (category) result = result.filter(c => c.category === category);
+        if (sortBy === 'title-asc') result.sort((a, b) => a.title.localeCompare(b.title));
+        else if (sortBy === 'title-desc') result.sort((a, b) => b.title.localeCompare(a.title));
+        else if (sortBy === 'category-asc') result.sort((a, b) => a.category.localeCompare(b.category));
+        else if (sortBy === 'category-desc') result.sort((a, b) => b.category.localeCompare(a.category));
         return result;
     }, [data, search, category, sortBy]);
 
-    // Stato di caricamento o errore
     if (loading) return <p>Caricamento in corso...</p>;
     if (error) return <p>Errore: {error}</p>;
 
@@ -63,8 +51,9 @@ export default function CoffeeList() {
         <div>
             <h1>☕ Coffee List</h1>
 
+            <FavoritesAlert show={showAlert} message={alertMessage} onClose={() => setShowAlert(false)} />
+
             <div className="filter-div">
-                {/* Sezione filtri */}
                 <Filters
                     search={search}
                     setSearch={setSearch}
@@ -74,26 +63,26 @@ export default function CoffeeList() {
                     setSortBy={setSortBy}
                 />
 
-                {search || category || sortBy ? (
-                    <button
-                        className="reset-btn"
-                        onClick={() => {
-                            setSearch('');
-                            setCategory('');
-                            setSortBy('');
-                        }}
-                    >
+                {(search || category || sortBy) && (
+                    <button className="reset-btn" onClick={() => {
+                        setSearch('');
+                        setCategory('');
+                        setSortBy('');
+                    }}>
                         Reset filtri
                     </button>
-                ) : null}
+                )}
             </div>
 
-            {/* Lista dei caffè filtrati */}
             {filteredCoffees.length === 0 ? (
                 <p>Nessun caffè trovato.</p>
             ) : (
                 filteredCoffees.map(coffee => (
-                    <CoffeeItem key={coffee.id} coffee={coffee} />
+                    <CoffeeItem
+                        key={coffee.id}
+                        coffee={coffee}
+                        onFavorite={() => handleFavorite(coffee)}
+                    />
                 ))
             )}
         </div>

@@ -1,21 +1,20 @@
-// src/components/FavoriteButton.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { useCoffee } from '../contexts/CoffeeContext';
+import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
+import { Link } from 'react-router-dom';
 
-const FavoriteButton = ({ coffee }) => {
-    const { favorites, setFavorites } = useCoffee();
-
-    const handleFavorite = () => {
-        if (favorites.includes(coffee.id)) {
-            setFavorites(favorites.filter(id => id !== coffee.id));
-        } else {
-            setFavorites([...favorites, coffee.id]);
-        }
-    };
+const FavoriteButton = ({ coffee, onFavorite }) => {
+    const { favorites } = useCoffee();
 
     return (
-        <button onClick={handleFavorite}>
-            {favorites.includes(coffee.id) ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti'}
+        <button onClick={() => onFavorite(coffee)}>
+            {favorites.includes(coffee.id) ? (
+                <AiFillHeart color="red" size={24} />
+            ) : (
+                <AiOutlineHeart size={24} />
+            )}
         </button>
     );
 };
+
+export default FavoriteButton;

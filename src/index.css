@@ -169,3 +169,39 @@ select {
     width: 120px;
     color: beige;
 }
+
+/*stile pagina preferiti*/
+.alert-div {
+    position: fixed !important;
+    top: 10px !important;
+    right: 10px !important;
+    background-color: white;
+    color: rgb(46, 18, 18);
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    text-align: center;
+}
+
+.closeAlert-btn-x {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.closeAlert-btn {
+    background-color: #f5deb3;
+    color: rgb(46, 18, 18);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px 20px;
+    display: block;
+    margin: 20px auto;
+}
