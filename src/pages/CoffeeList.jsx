@@ -4,33 +4,20 @@ import { useFetch } from '../hooks/useFetch';
 import { useCoffee } from '../contexts/CoffeeContext';
 import Filters from '../components/Filters';
 import CoffeeItem from '../components/CoffeeItem';
+import { useFavorites } from '../utils/favorites';
 
 export default function CoffeeList() {
     const { data, loading, error } = useFetch('/coffees');
     const { setCoffees, favorites, setFavorites } = useCoffee();
+    const { handleFavorite, showAlert, alertMessage, setShowAlert } = useFavorites();
 
     const [search, setSearch] = useState('');
     const [category, setCategory] = useState('');
     const [sortBy, setSortBy] = useState('');
 
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState('');
-
     useEffect(() => {
         if (data) setCoffees(data);
     }, [data, setCoffees]);
-
-    const handleFavorite = (coffee) => {
-        if (favorites.includes(coffee.id)) {
-            setFavorites(favorites.filter(id => id !== coffee.id));
-            setAlertMessage(`${coffee.title} correctly removed from favorites`);
-        } else {
-            setFavorites([...favorites, coffee.id]);
-            setAlertMessage(`${coffee.title} correctly added to favorites`);
-        }
-        setShowAlert(true);
-        setTimeout(() => setShowAlert(false), 5000);
-    };
 
     const filteredCoffees = useMemo(() => {
         if (!data) return [];
@@ -81,7 +68,7 @@ export default function CoffeeList() {
                     <CoffeeItem
                         key={coffee.id}
                         coffee={coffee}
-                        onFavorite={() => handleFavorite(coffee)}
+                        onFavorite={() => handleFavorite(coffee, favorites, setFavorites)}
                     />
                 ))
             )}

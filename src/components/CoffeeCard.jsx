@@ -1,8 +1,10 @@
 import React from 'react';
+import FavoriteButton from './FavoriteButton';
 
-const CoffeeCard = ({ coffee }) => {
+const CoffeeCard = ({ coffee, onFavorite }) => {
     return (
         <div>
+            <FavoriteButton coffee={coffee} onFavorite={onFavorite} />
             <h2>{coffee.title}</h2>
             <p><strong>Category:</strong> {coffee.category}</p>
             <p><strong>Roastery:</strong> {coffee.roaster}</p>

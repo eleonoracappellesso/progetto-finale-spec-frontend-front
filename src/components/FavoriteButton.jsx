@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useCoffee } from '../contexts/CoffeeContext';
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
 
