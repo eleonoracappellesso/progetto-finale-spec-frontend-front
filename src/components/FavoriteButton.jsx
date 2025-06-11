@@ -7,7 +7,7 @@ const FavoriteButton = ({ coffee, onFavorite }) => {
 
     return (
         <button
-            onClick={() => onFavorite(coffee)}
+            onClick={onFavorite}
             className='heart-btn'
         >
             {favorites.includes(coffee.id) ? (
@@ -16,7 +16,6 @@ const FavoriteButton = ({ coffee, onFavorite }) => {
                 <AiOutlineHeart color="gray" size={24} />
             )}
         </button>
-
     );
 };
 

@@ -2,13 +2,19 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useFetch } from '../hooks/useFetch';
 import CoffeeCard from '../components/CoffeeCard';
+import { useCoffee } from '../contexts/CoffeeContext';
+import { useFavorites } from '../utils/favorites';
+import FavoriteButton from '../components/FavoriteButton';
+import FavoritesAlert from '../components/FavoritesAlert';
 
-//Pagina che mostra i dettagli completi di un singolo caffè
 function CoffeeDetails() {
-    const { id } = useParams(); //Prendiamo l'ID dalla route
+    const { id } = useParams();
     const navigate = useNavigate();
 
-    //Chiamata API con l'ID dinamico
+    //istanzio gli hook per gestire i preferiti
+    const { favorites, setFavorites } = useCoffee();
+    const { handleFavorite, showAlert, alertMessage, setShowAlert } = useFavorites();
+
     const { data, loading, error } = useFetch(`/coffees/${id}`);
 
     if (loading) return <p>Loading...</p>;
@@ -18,8 +24,21 @@ function CoffeeDetails() {
 
     return (
         <div>
+
+            <FavoritesAlert show={showAlert} message={alertMessage} onClose={() => setShowAlert(false)} />
+
             <h1>☕ Coffee Details</h1>
-            <CoffeeCard coffee={coffee} />
+
+            <CoffeeCard
+                coffee={coffee}
+                favoriteButton={
+                    <FavoriteButton
+                        coffee={coffee}
+                        onFavorite={() => handleFavorite(coffee, favorites, setFavorites)}
+                    />
+                }
+            />
+
             <br />
             <div className='btn-container'>
                 <button

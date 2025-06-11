@@ -242,3 +242,17 @@ select {
     padding: 0;
     margin: 0;
 }
+
+/*stile card*/
+/* stile per l'header della CoffeeCard */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.card-header h2 {
+    margin: 0;
+}

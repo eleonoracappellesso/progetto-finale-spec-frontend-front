@@ -3,13 +3,20 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useCoffee } from '../contexts/CoffeeContext';
 import { useFetch } from '../hooks/useFetch';
 import CoffeeCard from '../components/CoffeeCard';
+import { useFavorites } from '../utils/favorites';
+import FavoriteButton from '../components/FavoriteButton';
+import FavoritesAlert from '../components/FavoritesAlert';
+
 
 function Compare() {
     const navigate = useNavigate();
-    const { coffees } = useCoffee();
+    const { coffees, favorites, setFavorites } = useCoffee();
     const [searchParams] = useSearchParams();
     const baseId = searchParams.get("base");
     const [selectedId, setSelectedId] = useState("");
+
+    //istanzio l'hook dei preferiti per gestire la logica e l'alert
+    const { handleFavorite, showAlert, alertMessage, setShowAlert } = useFavorites();
 
     const { data: baseData, loading: baseLoading, error: baseError } = useFetch(
         baseId ? `/coffees/${baseId}` : null
@@ -19,28 +26,17 @@ function Compare() {
         selectedId ? `/coffees/${selectedId}` : null
     );
 
-    const fields = [
-        { label: "Name", key: "title" },
-        { label: "Category", key: "category" },
-        { label: "Roastery", key: "roaster" },
-        { label: "Origin", key: "origin" },
-        { label: "Process", key: "process" },
-        { label: "Roast Level", key: "roastLevel" },
-        { label: "Quantity", key: "grams", suffix: "g" },
-        { label: "Price", key: "price", prefix: "€" },
-        { label: "Rating", key: "rating", suffix: "/10 ⭐" },
-    ];
-
     return (
         <div className="compare-page">
+
+            <FavoritesAlert show={showAlert} message={alertMessage} onClose={() => setShowAlert(false)} />
+
             <h1>📊 Coffee Comparison</h1>
 
-            {/* Intestazione fuori dalle colonne */}
             <div className="compare-header">
                 <div>
                     <h2>Base Coffee</h2>
                 </div>
-
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
                     <h2>Selected Coffee</h2>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
@@ -70,7 +66,16 @@ function Compare() {
                     ) : baseError ? (
                         <p>Error loading base coffee.</p>
                     ) : baseData?.coffee ? (
-                        <CoffeeCard coffee={baseData.coffee} fields={fields} />
+
+                        <CoffeeCard
+                            coffee={baseData.coffee}
+                            favoriteButton={
+                                <FavoriteButton
+                                    coffee={baseData.coffee}
+                                    onFavorite={() => handleFavorite(baseData.coffee, favorites, setFavorites)}
+                                />
+                            }
+                        />
                     ) : (
                         <p>Base coffee not found.</p>
                     )}
@@ -78,13 +83,20 @@ function Compare() {
 
                 <div className="coffee-column">
                     {selectedLoading && <p>Loading selected coffee...</p>}
-
                     {!selectedLoading && selectedId && !selectedData?.coffee && (
                         <p className="error-text">Error loading selected coffee.</p>
                     )}
-
                     {selectedData?.coffee && (
-                        <CoffeeCard coffee={selectedData.coffee} fields={fields} />
+
+                        <CoffeeCard
+                            coffee={selectedData.coffee}
+                            favoriteButton={
+                                <FavoriteButton
+                                    coffee={selectedData.coffee}
+                                    onFavorite={() => handleFavorite(selectedData.coffee, favorites, setFavorites)}
+                                />
+                            }
+                        />
                     )}
                 </div>
             </div>
