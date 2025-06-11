@@ -1,4 +1,4 @@
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
 
 // Creazione del contesto
 const CoffeeContext = createContext();
@@ -7,31 +7,37 @@ const CoffeeContext = createContext();
 export const CoffeeProvider = ({ children }) => {
     const [coffees, setCoffees] = useState([]); // Stato globale per i caffè
     const [compareList, setCompareList] = useState([]); // mex 2 caffè per confronto
-    const [favorites, setFavorites] = useState([]); //Stato globale per i caffè preferiti
 
-    // //Funzione che aggiunge un caffè alla lista di confronto
-    // const addToCompare = (coffee) => {
-    //     setCompareList(prev => {
-    //         if (prev.find(c => c.id === coffee.id)) return prev; //già presente
-    //         if (prev.length >= 2) return [prev[1], coffee]; //rimuove il più vecchio
-    //         return [...prev, coffee];
-    //     });
-    // };
+    // Stato per i preferiti, inizializzato leggendo dal localStorage
+    const [favorites, setFavorites] = useState(() => {
+        try {
+            const savedFavorites = localStorage.getItem('coffeeFavorites');
+            // Se troviamo dati nel localStorage, li parsiamo, altrimenti usiamo un array vuoto
+            return savedFavorites ? JSON.parse(savedFavorites) : [];
+        } catch (error) {
+            console.error("Could not load favorites from localStorage", error);
+            // In caso di errore (es. JSON malformato), partiamo con un array vuoto
+            return [];
+        }
+    });
 
-    // //Funzione che rimuove un caffè dalla lista di confronto
-    // const removeFromCompare = (id) => {
-    //     setCompareList(prev => prev.filter(c => c.id !== id));
-    // };
+    // useEffect per salvare i preferiti nel localStorage ogni volta che cambiano
+    useEffect(() => {
+        try {
+            localStorage.setItem('coffeeFavorites', JSON.stringify(favorites));
+        } catch (error) {
+            console.error("Could not save favorites to localStorage", error);
+        }
+    }, [favorites]); // La dipendenza [favorites] assicura che questo effetto venga eseguito solo quando lo stato dei preferiti cambia
 
     return (
         <CoffeeContext.Provider value={{
             coffees,
             setCoffees,
             compareList,
+            setCompareList,
             favorites,
             setFavorites
-            // addToCompare,
-            // removeFromCompare
         }}>
             {children}
         </CoffeeContext.Provider>

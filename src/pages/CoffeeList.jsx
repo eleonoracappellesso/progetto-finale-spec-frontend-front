@@ -5,8 +5,9 @@ import { useCoffee } from '../contexts/CoffeeContext';
 import Filters from '../components/Filters';
 import CoffeeItem from '../components/CoffeeItem';
 import { useFavorites } from '../utils/favorites';
+import { useDebounce } from '../hooks/useDebounce';
 
-export default function CoffeeList() {
+function CoffeeList() {
     const { data, loading, error } = useFetch('/coffees');
     const { setCoffees, favorites, setFavorites } = useCoffee();
     const { handleFavorite, showAlert, alertMessage, setShowAlert } = useFavorites();
@@ -15,6 +16,9 @@ export default function CoffeeList() {
     const [category, setCategory] = useState('');
     const [sortBy, setSortBy] = useState('');
 
+    //Creo un valore debounced per la ricerca
+    const debouncedSearch = useDebounce(search, 500); // Ritardo di 500ms
+
     useEffect(() => {
         if (data) setCoffees(data);
     }, [data, setCoffees]);
@@ -22,14 +26,18 @@ export default function CoffeeList() {
     const filteredCoffees = useMemo(() => {
         if (!data) return [];
         let result = [...data];
-        if (search) result = result.filter(c => c.title.toLowerCase().includes(search.toLowerCase()));
+        //Uso il valore debounced per filtrare
+        if (debouncedSearch) {
+            result = result.filter(c => c.title.toLowerCase().includes(debouncedSearch.toLowerCase()));
+        }
         if (category) result = result.filter(c => c.category === category);
         if (sortBy === 'title-asc') result.sort((a, b) => a.title.localeCompare(b.title));
         else if (sortBy === 'title-desc') result.sort((a, b) => b.title.localeCompare(a.title));
         else if (sortBy === 'category-asc') result.sort((a, b) => a.category.localeCompare(b.category));
         else if (sortBy === 'category-desc') result.sort((a, b) => b.category.localeCompare(a.category));
         return result;
-    }, [data, search, category, sortBy]);
+        //Aggiungo il valore debounced alle dipendenze di useMemo
+    }, [data, debouncedSearch, category, sortBy]);
 
     if (loading) return <p>Caricamento in corso...</p>;
     if (error) return <p>Errore: {error}</p>;
@@ -75,3 +83,5 @@ export default function CoffeeList() {
         </div>
     );
 }
+
+export default React.memo(CoffeeList);

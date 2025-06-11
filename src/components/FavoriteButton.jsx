@@ -20,4 +20,4 @@ const FavoriteButton = ({ coffee, onFavorite }) => {
     );
 };
 
-export default FavoriteButton;
+export default React.memo(FavoriteButton);

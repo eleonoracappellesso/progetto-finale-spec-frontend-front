@@ -4,7 +4,7 @@ import { useFetch } from '../hooks/useFetch';
 import CoffeeCard from '../components/CoffeeCard';
 
 //Pagina che mostra i dettagli completi di un singolo caffè
-export default function CoffeeDetails() {
+function CoffeeDetails() {
     const { id } = useParams(); //Prendiamo l'ID dalla route
     const navigate = useNavigate();
 
@@ -40,3 +40,5 @@ export default function CoffeeDetails() {
         </div>
     );
 }
+
+export default React.memo(CoffeeDetails);

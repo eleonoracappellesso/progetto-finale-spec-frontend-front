@@ -19,4 +19,4 @@ const FavoritesAlert = ({ show, message, onClose }) => {
     );
 };
 
-export default FavoritesAlert;
+export default React.memo(FavoritesAlert);

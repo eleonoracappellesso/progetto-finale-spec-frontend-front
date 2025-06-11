@@ -1,10 +1,10 @@
 import React from 'react';
-import FavoriteButton from './FavoriteButton';
+// import FavoriteButton from './FavoriteButton';
 
-const CoffeeCard = ({ coffee, onFavorite }) => {
+const CoffeeCard = ({ coffee }) => {
     return (
         <div>
-            <FavoriteButton coffee={coffee} onFavorite={onFavorite} />
+            {/* <FavoriteButton coffee={coffee} onFavorite={onFavorite} /> */}
             <h2>{coffee.title}</h2>
             <p><strong>Category:</strong> {coffee.category}</p>
             <p><strong>Roastery:</strong> {coffee.roaster}</p>
@@ -18,4 +18,4 @@ const CoffeeCard = ({ coffee, onFavorite }) => {
     );
 };
 
-export default CoffeeCard;
+export default React.memo(CoffeeCard);

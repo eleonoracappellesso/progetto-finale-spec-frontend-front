@@ -4,7 +4,7 @@ import { useFavorites } from '../utils/favorites';
 import CoffeeItem from './CoffeeItem';
 import FavoritesAlert from './FavoritesAlert';
 
-export default function FavoritesList() {
+function FavoritesList() {
     const { coffees, favorites, setFavorites } = useCoffee();
     const { handleFavorite, showAlert, setShowAlert, alertMessage } = useFavorites();
 
@@ -14,15 +14,26 @@ export default function FavoritesList() {
 
             <FavoritesAlert show={showAlert} message={alertMessage} onClose={() => setShowAlert(false)} />
 
-            <ul>
-                {favorites.map(id => (
-                    <li key={id}>
-                        {coffees.find(coffee => coffee.id === id) && (
-                            <CoffeeItem coffee={coffees.find(coffee => coffee.id === id)} onFavorite={() => handleFavorite(coffees.find(coffee => coffee.id === id), favorites, setFavorites)} />
-                        )}
-                    </li>
-                ))}
-            </ul>
+            {/* controllo se la lista preferiti è vuota */}
+            {favorites.length === 0 ? (
+                <p>Your favorites list is empty. Add some from the main list!</p>
+            ) : (
+                <ul>
+                    {favorites.map(id => {
+                        const coffee = coffees.find(c => c.id === id);
+                        return coffee ? (
+                            <li key={id}>
+                                <CoffeeItem
+                                    coffee={coffee}
+                                    onFavorite={() => handleFavorite(coffee, favorites, setFavorites)}
+                                />
+                            </li>
+                        ) : null; // Aggiunto controllo per caffè non trovato
+                    })}
+                </ul>
+            )}
         </div>
     );
 }
+
+export default React.memo(FavoritesList);
