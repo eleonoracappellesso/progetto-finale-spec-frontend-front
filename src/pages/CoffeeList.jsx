@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import FavoritesAlert from '../components/FavoritesAlert';
-import { useFetch } from '../hooks/useFetch';
 import { useCoffee } from '../contexts/CoffeeContext';
 import Filters from '../components/Filters';
 import CoffeeItem from '../components/CoffeeItem';
@@ -8,25 +7,17 @@ import { useFavorites } from '../utils/favorites';
 import { useDebounce } from '../hooks/useDebounce';
 
 function CoffeeList() {
-    const { data, loading, error } = useFetch('/coffees');
-    const { setCoffees, favorites, setFavorites } = useCoffee();
+    const { coffees, loading, error, favorites, setFavorites } = useCoffee();
     const { handleFavorite, showAlert, alertMessage, setShowAlert } = useFavorites();
 
     const [search, setSearch] = useState('');
     const [category, setCategory] = useState('');
     const [sortBy, setSortBy] = useState('');
-
-    //Creo un valore debounced per la ricerca
-    const debouncedSearch = useDebounce(search, 500); // Ritardo di 500ms
-
-    useEffect(() => {
-        if (data) setCoffees(data);
-    }, [data, setCoffees]);
+    const debouncedSearch = useDebounce(search, 500);
 
     const filteredCoffees = useMemo(() => {
-        if (!data) return [];
-        let result = [...data];
-        //Uso il valore debounced per filtrare
+        if (!coffees) return [];
+        let result = [...coffees];
         if (debouncedSearch) {
             result = result.filter(c => c.title.toLowerCase().includes(debouncedSearch.toLowerCase()));
         }
@@ -36,8 +27,7 @@ function CoffeeList() {
         else if (sortBy === 'category-asc') result.sort((a, b) => a.category.localeCompare(b.category));
         else if (sortBy === 'category-desc') result.sort((a, b) => b.category.localeCompare(a.category));
         return result;
-        //Aggiungo il valore debounced alle dipendenze di useMemo
-    }, [data, debouncedSearch, category, sortBy]);
+    }, [coffees, debouncedSearch, category, sortBy]);
 
     if (loading) return <p>Caricamento in corso...</p>;
     if (error) return <p>Errore: {error}</p>;
