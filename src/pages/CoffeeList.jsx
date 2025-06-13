@@ -3,12 +3,18 @@ import FavoritesAlert from '../components/FavoritesAlert';
 import { useCoffee } from '../contexts/CoffeeContext';
 import Filters from '../components/Filters';
 import CoffeeItem from '../components/CoffeeItem';
-import { useFavorites } from '../utils/favorites';
 import { useDebounce } from '../hooks/useDebounce';
 
 function CoffeeList() {
-    const { coffees, loading, error, favorites, setFavorites } = useCoffee();
-    const { handleFavorite, showAlert, alertMessage, setShowAlert } = useFavorites();
+    const {
+        coffees,
+        loading,
+        error,
+        toggleFavorite,
+        showAlert,
+        alertMessage,
+        setShowAlert
+    } = useCoffee();
 
     const [search, setSearch] = useState('');
     const [category, setCategory] = useState('');
@@ -18,9 +24,7 @@ function CoffeeList() {
     const filteredCoffees = useMemo(() => {
         if (!coffees) return [];
         let result = [...coffees];
-        if (debouncedSearch) {
-            result = result.filter(c => c.title.toLowerCase().includes(debouncedSearch.toLowerCase()));
-        }
+        if (debouncedSearch) result = result.filter(c => c.title.toLowerCase().includes(debouncedSearch.toLowerCase()));
         if (category) result = result.filter(c => c.category === category);
         if (sortBy === 'title-asc') result.sort((a, b) => a.title.localeCompare(b.title));
         else if (sortBy === 'title-desc') result.sort((a, b) => b.title.localeCompare(a.title));
@@ -47,13 +51,8 @@ function CoffeeList() {
                     sortBy={sortBy}
                     setSortBy={setSortBy}
                 />
-
                 {(search || category || sortBy) && (
-                    <button className="reset-btn" onClick={() => {
-                        setSearch('');
-                        setCategory('');
-                        setSortBy('');
-                    }}>
+                    <button className="reset-btn" onClick={() => { setSearch(''); setCategory(''); setSortBy(''); }}>
                         Reset filtri
                     </button>
                 )}
@@ -66,7 +65,7 @@ function CoffeeList() {
                     <CoffeeItem
                         key={coffee.id}
                         coffee={coffee}
-                        onFavorite={() => handleFavorite(coffee, favorites, setFavorites)}
+                        onFavorite={() => toggleFavorite(coffee)}
                     />
                 ))
             )}

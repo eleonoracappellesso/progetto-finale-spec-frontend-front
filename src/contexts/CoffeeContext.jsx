@@ -1,15 +1,12 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 
-// Creazione del contesto
 const CoffeeContext = createContext();
 
-// Provider del contesto per fornire dati a tutta l'app
 export const CoffeeProvider = ({ children }) => {
-    const [coffees, setCoffees] = useState([]); // Stato globale per i caffè
-    const [loading, setLoading] = useState(true); // Stato di caricamento globale
-    const [error, setError] = useState(null); // Stato di errore globale
-
-    const [compareList, setCompareList] = useState([]); // max 2 caffè per confronto
+    const [coffees, setCoffees] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [compareList, setCompareList] = useState([]);
 
     const [favorites, setFavorites] = useState(() => {
         try {
@@ -21,7 +18,35 @@ export const CoffeeProvider = ({ children }) => {
         }
     });
 
-    // Effetto per caricare i caffè una sola volta, quando il provider viene montato
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+
+    const toggleFavorite = (coffee) => {
+        setFavorites(prevFavorites => {
+            if (prevFavorites.includes(coffee.id)) {
+                setAlertMessage(`${coffee.title} correctly removed from favorites`);
+                return prevFavorites.filter(id => id !== coffee.id);
+            } else {
+                setAlertMessage(`${coffee.title} correctly added to favorites`);
+                return [...prevFavorites, coffee.id];
+            }
+        });
+
+        setShowAlert(true);
+        setTimeout(() => setShowAlert(false), 5000);
+    };
+
+    // Effetto per la persistenza su localStorage
+    useEffect(() => {
+        try {
+            localStorage.setItem('coffeeFavorites', JSON.stringify(favorites));
+        } catch (error) {
+            console.error("Could not save favorites to localStorage", error);
+        }
+    }, [favorites]);
+
+    // --- FINE LOGICA PREFERITI ---
+
     useEffect(() => {
         const fetchAllCoffees = async () => {
             try {
@@ -38,34 +63,27 @@ export const CoffeeProvider = ({ children }) => {
                 setLoading(false);
             }
         };
-
         fetchAllCoffees();
-    }, []); // L'array vuoto [] assicura che l'effetto venga eseguito solo una volta
+    }, []);
 
-    // Effetto per salvare i preferiti nel localStorage
-    useEffect(() => {
-        try {
-            localStorage.setItem('coffeeFavorites', JSON.stringify(favorites));
-        } catch (error) {
-            console.error("Could not save favorites to localStorage", error);
-        }
-    }, [favorites]);
+    const contextValue = {
+        coffees,
+        loading,
+        error,
+        compareList,
+        setCompareList,
+        favorites,
+        toggleFavorite,
+        showAlert,
+        alertMessage,
+        setShowAlert
+    };
 
     return (
-        <CoffeeContext.Provider value={{
-            coffees,
-            loading,
-            error,
-            setCoffees,
-            compareList,
-            setCompareList,
-            favorites,
-            setFavorites
-        }}>
+        <CoffeeContext.Provider value={contextValue}>
             {children}
         </CoffeeContext.Provider>
     );
 };
 
-// Custom hook per usare il contesto in modo comodo
 export const useCoffee = () => useContext(CoffeeContext);

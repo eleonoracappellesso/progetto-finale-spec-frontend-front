@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useFetch } from '../hooks/useFetch';
 import CoffeeCard from '../components/CoffeeCard';
 import { useCoffee } from '../contexts/CoffeeContext';
-import { useFavorites } from '../utils/favorites';
 import FavoriteButton from '../components/FavoriteButton';
 import FavoritesAlert from '../components/FavoritesAlert';
 
@@ -11,9 +10,7 @@ function CoffeeDetails() {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    //istanzio gli hook per gestire i preferiti
-    const { favorites, setFavorites } = useCoffee();
-    const { handleFavorite, showAlert, alertMessage, setShowAlert } = useFavorites();
+    const { toggleFavorite, showAlert, alertMessage, setShowAlert } = useCoffee();
 
     const { data, loading, error } = useFetch(`/coffees/${id}`);
 
@@ -24,7 +21,6 @@ function CoffeeDetails() {
 
     return (
         <div>
-
             <FavoritesAlert show={showAlert} message={alertMessage} onClose={() => setShowAlert(false)} />
 
             <h1>☕ Coffee Details</h1>
@@ -34,7 +30,7 @@ function CoffeeDetails() {
                 favoriteButton={
                     <FavoriteButton
                         coffee={coffee}
-                        onFavorite={() => handleFavorite(coffee, favorites, setFavorites)}
+                        onFavorite={() => toggleFavorite(coffee)}
                     />
                 }
             />
@@ -47,7 +43,6 @@ function CoffeeDetails() {
                 >
                     Compare
                 </button>
-
                 <br />
                 <button
                     className='backToList-btn'

@@ -1,12 +1,17 @@
 import React from 'react';
 import { useCoffee } from '../contexts/CoffeeContext';
-import { useFavorites } from '../utils/favorites';
 import CoffeeItem from './CoffeeItem';
 import FavoritesAlert from './FavoritesAlert';
 
 function FavoritesList() {
-    const { coffees, favorites, setFavorites } = useCoffee();
-    const { handleFavorite, showAlert, setShowAlert, alertMessage } = useFavorites();
+    const {
+        coffees,
+        favorites,
+        toggleFavorite,
+        showAlert,
+        alertMessage,
+        setShowAlert
+    } = useCoffee();
 
     return (
         <div className='favorites-list'>
@@ -14,9 +19,8 @@ function FavoritesList() {
 
             <FavoritesAlert show={showAlert} message={alertMessage} onClose={() => setShowAlert(false)} />
 
-            {/* controllo se la lista preferiti è vuota */}
             {favorites.length === 0 ? (
-                <p>Your favorites list is empty. Add some from the main list!</p>
+                <p>La tua lista di preferiti è vuota. Aggiungine qualcuno dalla lista principale!</p>
             ) : (
                 <ul>
                     {favorites.map(id => {
@@ -25,10 +29,10 @@ function FavoritesList() {
                             <li key={id}>
                                 <CoffeeItem
                                     coffee={coffee}
-                                    onFavorite={() => handleFavorite(coffee, favorites, setFavorites)}
+                                    onFavorite={() => toggleFavorite(coffee)}
                                 />
                             </li>
-                        ) : null; // Aggiunto controllo per caffè non trovato
+                        ) : null;
                     })}
                 </ul>
             )}
