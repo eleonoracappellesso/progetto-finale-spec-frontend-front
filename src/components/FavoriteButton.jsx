@@ -1,15 +1,19 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useCoffee } from '../contexts/CoffeeContext';
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
 
-const FavoriteButton = ({ coffee, onFavorite }) => {
-    // Usa il contesto solo per sapere se l'elemento è nei preferiti
-    const { favorites } = useCoffee();
+const FavoriteButton = ({ coffee }) => {
+    //Ottiene sia lo stato che la funzione per modificarlo dal contesto
+    const { favorites, toggleFavorite } = useCoffee();
+
+    //Crea e memorizza un gestore di click specifico per questo bottone
+    const handleFavoriteClick = useCallback(() => {
+        toggleFavorite(coffee);
+    }, [toggleFavorite, coffee]); //Si aggiorna solo se il caffè o la funzione cambiano
 
     return (
         <button
-            // Chiama la funzione passata dal genitore (es. toggleFavorite)
-            onClick={onFavorite}
+            onClick={handleFavoriteClick}
             className='heart-btn'
         >
             {favorites.includes(coffee.id) ? (

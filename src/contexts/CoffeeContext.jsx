@@ -1,13 +1,15 @@
-import { createContext, useState, useContext, useEffect } from 'react';
+import { createContext, useState, useContext, useEffect, useCallback, useMemo } from 'react';
 
 const CoffeeContext = createContext();
 
 export const CoffeeProvider = ({ children }) => {
+    //Stati esistenti
     const [coffees, setCoffees] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [compareList, setCompareList] = useState([]);
 
+    //Stato dei preferiti con localStorage
     const [favorites, setFavorites] = useState(() => {
         try {
             const savedFavorites = localStorage.getItem('coffeeFavorites');
@@ -18,10 +20,12 @@ export const CoffeeProvider = ({ children }) => {
         }
     });
 
+    //Stati per l'alert
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
 
-    const toggleFavorite = (coffee) => {
+    //Funzione per aggiungere/rimuovere un preferito, memorizzata con useCallback
+    const toggleFavorite = useCallback((coffee) => {
         setFavorites(prevFavorites => {
             if (prevFavorites.includes(coffee.id)) {
                 setAlertMessage(`${coffee.title} correctly removed from favorites`);
@@ -33,10 +37,12 @@ export const CoffeeProvider = ({ children }) => {
         });
 
         setShowAlert(true);
-        setTimeout(() => setShowAlert(false), 5000);
-    };
+        //Uso un riferimento a un timer per pulirlo se necessario
+        const timerId = setTimeout(() => setShowAlert(false), 5000);
+        return () => clearTimeout(timerId);
+    }, []); //Dipendenze vuote perché le funzioni setState sono stabili
 
-    // Effetto per la persistenza su localStorage
+    //Effetto per la persistenza su localStorage
     useEffect(() => {
         try {
             localStorage.setItem('coffeeFavorites', JSON.stringify(favorites));
@@ -45,8 +51,7 @@ export const CoffeeProvider = ({ children }) => {
         }
     }, [favorites]);
 
-    // --- FINE LOGICA PREFERITI ---
-
+    //Effetto per il caricamento globale dei caffè
     useEffect(() => {
         const fetchAllCoffees = async () => {
             try {
@@ -66,7 +71,8 @@ export const CoffeeProvider = ({ children }) => {
         fetchAllCoffees();
     }, []);
 
-    const contextValue = {
+    //Il valore del contesto è memorizzato con useMemo per evitare re-render non necessari dei consumer
+    const contextValue = useMemo(() => ({
         coffees,
         loading,
         error,
@@ -77,7 +83,7 @@ export const CoffeeProvider = ({ children }) => {
         showAlert,
         alertMessage,
         setShowAlert
-    };
+    }), [coffees, loading, error, compareList, favorites, toggleFavorite, showAlert, alertMessage]);
 
     return (
         <CoffeeContext.Provider value={contextValue}>

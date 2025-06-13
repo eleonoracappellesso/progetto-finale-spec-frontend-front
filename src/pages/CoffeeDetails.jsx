@@ -10,8 +10,7 @@ function CoffeeDetails() {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    const { toggleFavorite, showAlert, alertMessage, setShowAlert } = useCoffee();
-
+    const { showAlert, alertMessage, setShowAlert } = useCoffee();
     const { data, loading, error } = useFetch(`/coffees/${id}`);
 
     if (loading) return <p>Loading...</p>;
@@ -22,32 +21,18 @@ function CoffeeDetails() {
     return (
         <div>
             <FavoritesAlert show={showAlert} message={alertMessage} onClose={() => setShowAlert(false)} />
-
             <h1>☕ Coffee Details</h1>
-
             <CoffeeCard
                 coffee={coffee}
-                favoriteButton={
-                    <FavoriteButton
-                        coffee={coffee}
-                        onFavorite={() => toggleFavorite(coffee)}
-                    />
-                }
+                favoriteButton={<FavoriteButton coffee={coffee} />}
             />
-
             <br />
             <div className='btn-container'>
-                <button
-                    className='compare-btn'
-                    onClick={() => navigate(`/compare?base=${coffee.id}`)}
-                >
+                <button className='compare-btn' onClick={() => navigate(`/compare?base=${coffee.id}`)}>
                     Compare
                 </button>
                 <br />
-                <button
-                    className='backToList-btn'
-                    onClick={() => navigate('/')}
-                >
+                <button className='backToList-btn' onClick={() => navigate('/')}>
                     ← Back to list
                 </button>
             </div>

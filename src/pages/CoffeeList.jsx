@@ -10,7 +10,6 @@ function CoffeeList() {
         coffees,
         loading,
         error,
-        toggleFavorite,
         showAlert,
         alertMessage,
         setShowAlert
@@ -39,9 +38,7 @@ function CoffeeList() {
     return (
         <div>
             <h1>☕ Coffee List</h1>
-
             <FavoritesAlert show={showAlert} message={alertMessage} onClose={() => setShowAlert(false)} />
-
             <div className="filter-div">
                 <Filters
                     search={search}
@@ -57,7 +54,6 @@ function CoffeeList() {
                     </button>
                 )}
             </div>
-
             {filteredCoffees.length === 0 ? (
                 <p>Nessun caffè trovato.</p>
             ) : (
@@ -65,7 +61,6 @@ function CoffeeList() {
                     <CoffeeItem
                         key={coffee.id}
                         coffee={coffee}
-                        onFavorite={() => toggleFavorite(coffee)}
                     />
                 ))
             )}
