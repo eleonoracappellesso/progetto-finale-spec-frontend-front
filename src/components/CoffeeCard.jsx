@@ -1,8 +1,12 @@
 //Importo la libreria React necessaria per creare componenti React
 import React from 'react';
 
-//Definisco il componente funzionale CoffeeCard
-//Riceve due props: coffee (oggetto con i dati del caffè) e favoriteButton (componente per il tasto "preferito")
+/*
+Definisco il componente funzionale CoffeeCard (mostra le infromazioni relative ad un caffè specifico)
+Riceve due props: 
+- coffee (oggetto con i dati del caffè) 
+- favoriteButton (componente per il tasto "preferito")
+*/
 const CoffeeCard = ({ coffee, favoriteButton }) => {
     return (
         <div>
@@ -25,6 +29,7 @@ const CoffeeCard = ({ coffee, favoriteButton }) => {
     );
 };
 
-//Esporto il componente ottimizzato con React.memo
-//React.memo evita il rendering del componente se le props non sono cambiate
+/*
+Esporto il componente ottimizzato con React.memo, che evita il rendering del componente se le props non sono cambiate
+*/
 export default React.memo(CoffeeCard);
